@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading;
 
 namespace LoadTestToolbox
@@ -35,27 +34,9 @@ namespace LoadTestToolbox
             }
 
             var visualizerDir = Environment.GetEnvironmentVariable("VISUALIZER_FILES") ?? ".";
-            var chartLabels = GetChartLabels(tool, args);
-            var visualizer = new Visualizer(visualizerDir, chartLabels);
+            var visualizer = new Visualizer(visualizerDir);
             var output = new FileStream(outputFileName, FileMode.OpenOrCreate, FileAccess.Write);
             visualizer.SaveChart(results, output);
-        }
-
-        private static ChartLabels GetChartLabels(string tool, IReadOnlyList<string> args)
-        {
-            switch (tool)
-            {
-                case "hammer":
-                {
-                    return Hammer.ChartLabels;
-                }
-                case "drill":
-                {
-                    return Drill.ChartLabels;
-                }
-                default:
-                    throw new Exception($"The tool called {tool} is currently not supported.");
-            }
         }
 
         private static IDictionary<int, double> GetResults(string tool, IReadOnlyList<string> args)
